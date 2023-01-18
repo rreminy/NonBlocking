@@ -34,8 +34,8 @@ namespace NonBlocking
         internal uint _lastResizeTickMillis;
         internal object _sweeperInstance;
         internal int _sweepRequests;
-        private Lazy<KeyCollection> _keys;
-        private Lazy<ValueCollection> _values;
+        private KeyCollection _keys;
+        private ValueCollection _values;
 
         /// <summary>The default capacity, i.e. the initial # of buckets.</summary>
         /// <remarks>
@@ -166,8 +166,8 @@ namespace NonBlocking
                 throw new ArgumentOutOfRangeException(nameof(capacity));
             }
 
-            _keys = new(() => new(this));
-            _values = new(() => new(this));
+            _keys = new(this);
+            _values = new(this);
 
             // add some extra so that filled to capacity would be at 50% density
             capacity = Math.Max(capacity, capacity * 2);
@@ -1352,12 +1352,12 @@ namespace NonBlocking
         /// <summary>
         /// Gets a collection containing the keys in the dictionary.
         /// </summary>
-        private KeyCollection GetKeys() => _keys.Value;
+        private KeyCollection GetKeys() => _keys;
 
         /// <summary>
         /// Gets a collection containing the values in the dictionary.
         /// </summary>
-        private ValueCollection GetValues() => _values.Value;
+        private ValueCollection GetValues() => _values;
 
         internal class SnapshotEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
