@@ -28,7 +28,7 @@ namespace NonBlocking
 
             public void Clear() => throw new NotSupportedException();
 
-            public bool Contains(TValue item) => throw new NotSupportedException();
+            public bool Contains(TValue item) => this.Any(i => EqualityComparer<TValue>.Default.Equals(item, i));
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
