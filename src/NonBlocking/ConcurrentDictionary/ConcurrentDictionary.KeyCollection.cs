@@ -8,7 +8,7 @@ namespace NonBlocking
 {
     public partial class ConcurrentDictionary<TKey, TValue>
     {
-        public class KeyCollection : ICollection<TKey>, ICollection
+        public sealed class KeyCollection : ICollection<TKey>, ICollection
         {
             private readonly ConcurrentDictionary<TKey, TValue> _dictionary;
             public KeyCollection(ConcurrentDictionary<TKey, TValue> dictionary)
