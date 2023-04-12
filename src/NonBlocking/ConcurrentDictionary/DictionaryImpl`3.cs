@@ -185,6 +185,13 @@ namespace NonBlocking
                 return this.Size;
             }
         }
+        internal sealed override int EstimatedCount
+        {
+            get
+            {
+                return this.EstimatedSize;
+            }
+        }
 
         internal sealed override void Clear()
         {
@@ -931,6 +938,18 @@ namespace NonBlocking
                 // counter does not lose counts, but reports of increments/decrements can be delayed
                 // it might be confusing if we ever report negative size.
                 var size = _size.Value;
+                var negMask = ~(size >> 31);
+                return size & negMask;
+            }
+        }
+
+        internal int EstimatedSize
+        {
+            get
+            {
+                // counter does not lose counts, but reports of increments/decrements can be delayed
+                // it might be confusing if we ever report negative size.
+                var size = _size.EstimatedValue;
                 var negMask = ~(size >> 31);
                 return size & negMask;
             }

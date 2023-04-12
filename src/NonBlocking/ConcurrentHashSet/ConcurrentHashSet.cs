@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace NonBlocking
 {
@@ -13,7 +12,7 @@ namespace NonBlocking
     /// <typeparam name="T">Item type</typeparam>
     public class ConcurrentHashSet<T> : ISet<T>, IReadOnlySet<T> where T : notnull
     {
-        private readonly ConcurrentDictionary<T, Nothing> _backingDictionary;
+        private readonly ConcurrentDictionary<T, object?> _backingDictionary;
 
         public ConcurrentHashSet()
         {
@@ -22,7 +21,7 @@ namespace NonBlocking
 
         public ConcurrentHashSet(IEnumerable<T> items)
         {
-            _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, new Nothing())));
+            _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, (object?)null)));
         }
 
         public ConcurrentHashSet(IEqualityComparer<T> comparer)
@@ -37,7 +36,7 @@ namespace NonBlocking
 
         public ConcurrentHashSet(IEnumerable<T> items, IEqualityComparer<T> comparer)
         {
-            _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, new Nothing())), comparer);
+            _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, (object?)null)), comparer);
         }
 
         public ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T> comparer)
@@ -47,15 +46,16 @@ namespace NonBlocking
 
         public ConcurrentHashSet(int concurrencyLevel, IEnumerable<T> items, IEqualityComparer<T> comparer)
         {
-            _backingDictionary = new(concurrencyLevel, items.Select(item => KeyValuePair.Create(item, new Nothing())), comparer);
+            _backingDictionary = new(concurrencyLevel, items.Select(item => KeyValuePair.Create(item, (object?)null)), comparer);
         }
 
         public int Count => _backingDictionary.Count;
+        public int EstimatedCount => _backingDictionary.EstimatedCount;
 
         public bool IsReadOnly => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Add(T item) => _backingDictionary.TryAdd(item, new());
+        public bool Add(T item) => _backingDictionary.TryAdd(item, null);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(T item) => _backingDictionary.TryRemove(item, out _);
