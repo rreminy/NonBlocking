@@ -4,6 +4,7 @@
 
 #nullable disable
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace NonBlocking
@@ -22,16 +23,45 @@ namespace NonBlocking
 
         internal sealed class Prime
         {
+            [ThreadStatic]
+            private static Prime s_cachedPrime;
+            public static Prime GetOrCreate(object originalValue)
+            {
+                Prime prime;
+                if ((prime = s_cachedPrime) is not null)
+                {
+                    //Console.Write("C");
+                    s_cachedPrime = null;
+                }
+                else
+                {
+                    //Console.Write("+");
+                    prime = new Prime();
+                }
+                prime.originalValue = originalValue;
+                return prime;
+            }
+
+            public static void Return(Prime prime)
+            {
+                //Console.Write("-");
+                if (s_cachedPrime is not null) return;
+                prime.originalValue = null;
+                s_cachedPrime = prime;
+            }
+            
             internal object originalValue;
 
-            public Prime(object originalValue)
+            private Prime() { /* Empty */ }
+
+            private Prime(object originalValue)
             {
                 this.originalValue = originalValue;
             }
         }
 
         internal static readonly object TOMBSTONE = new object();
-        internal static readonly Prime TOMBPRIME = new Prime(TOMBSTONE);
+        internal static readonly Prime TOMBPRIME = Prime.GetOrCreate(TOMBSTONE);
         internal static readonly object NULLVALUE = new object();
 
         // represents a trivially copied empty entry
@@ -69,6 +99,8 @@ namespace NonBlocking
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static int ReduceHashToIndex(int fullHash, int lenMask)
         {
+            return fullHash & lenMask;
+            /*
             var h = (uint)fullHash;
 
             // xor-shift some upper bits down, in case if variations are mostly in high bits
@@ -79,6 +111,7 @@ namespace NonBlocking
             h += (h >> 3) * 2654435769u;
 
             return (int)h & lenMask;
+            */
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

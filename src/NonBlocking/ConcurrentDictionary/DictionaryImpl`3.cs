@@ -92,7 +92,6 @@ namespace NonBlocking
         internal DictionaryImpl(int capacity, ConcurrentDictionary<TKey, TValue> topDict)
         {
             capacity = Math.Max(capacity, MIN_SIZE);
-
             capacity = Util.AlignToPowerOfTwo(capacity);
             this._entries = new Entry[capacity];
             this._size = new Counter32();
@@ -195,6 +194,7 @@ namespace NonBlocking
 
         internal sealed override void Clear()
         {
+            if (this.Size == 0) return;
             var newTable = CreateNew(MIN_SIZE);
             newTable._size = new Counter32();
             _topDict._table = newTable;
@@ -1201,7 +1201,7 @@ namespace NonBlocking
                 {
                     box = EntryValueNullOrDead(oldval) ?
                         TOMBPRIME :
-                        new Prime(oldval);
+                        Prime.GetOrCreate(oldval);
 
                     // CAS down a box'd version of oldval
                     // also works as a complete fence between reading the value and the key
@@ -1256,10 +1256,17 @@ namespace NonBlocking
             // forever hide the old-table value by gently inserting TOMBPRIME value.
             // This will stop other threads from uselessly attempting to copy this slot
             // (i.e., it's a speed optimization not a correctness issue).
-            if (oldEntry.value != TOMBPRIME)
+
+            oldval = oldEntry.value;
+            if (oldval != TOMBPRIME)
             {
-                oldEntry.value = TOMBPRIME;
+                if (oldval is Prime && Interlocked.CompareExchange(ref oldEntry.value, TOMBPRIME, oldval) == oldval) Prime.Return(box);
+                //else oldEntry.value = TOMBPRIME; // TODO: Is this needed?
             }
+            //if (oldEntry.value != TOMBPRIME)
+            //{
+            //    oldEntry.value = TOMBPRIME;
+            //}
 
             // if we failed to copy, it means something has already appeared in
             // the new table and old value should have been copied before that (not by us).
