@@ -955,6 +955,8 @@ namespace NonBlocking
             }
         }
 
+        internal override int Capacity => this._entries.Length;
+
         internal int EstimatedSlotsUsed
         {
             get
