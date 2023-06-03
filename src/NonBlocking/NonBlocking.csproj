@@ -3,14 +3,27 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
 
-    <PackageId>NonBlocking</PackageId>
+    <PackageId>AG.NonBlocking</PackageId>
     <PackageVersion>2.1.1</PackageVersion>
     <Authors>Vladimir Sadov</Authors> 
     <Description>
       Implementation of a lock-free dictionary on .Net
 
+      This fork contain the following changes:
+      - Non-snapshotting Keys and Values properties (Azure Gem)
+      - Attempt at reducing GC pressure (Azure Gem, TODO: Measure effectiveness, seems to be minimal-to-nonexistent-to-imaginary, YMMV)
+      - NonBlockingHashset wrapper (Azure Gem, TODO: Implement a proper one instead of a wrapper)
+      - Capacity getter property (Azure Gem)
+      - Capacity is not doubled on construction (Azure Gem)
+      - Clear with capacity (Azure Gem)
+      - EstimatedCount getter property (Azure Gem)
+      - Removal of the hash mixer (Idea from https://github.com/VSadov/NonBlocking/issues/20#issuecomment-1545057207)
+      - Rename everything from "Concurrent" to "Nonblocking" (Azure Gem)
+      
+      Some changes are specific to my use case.
+
       Included types:
-      === NonBlocking.ConcurrentDictionary
+      === NonBlocking.NonBlockingDictionary
       Lock-free, wait-free implementation of a dictionary.
       - has the same API as System.Collections.Concurrent.ConcurrentDictionary.
       - No locks are taken during any operation including Get, Add, Remove, internal resizes etc...
@@ -21,19 +34,29 @@
 
       Core algorithms are based on NonBlockingHashMap, written and released to the public domain by Dr. Cliff Click. A good overview could be found here: https://www.youtube.com/watch?v=HJ-719EGIts
 
+      === NonBlocking.NonBlockingHashSet
+      Lock-free, wait-free implementation of a hashset based on NonBlockingDictionary.
+      - No locks are taken during any operation including Get, Add, Remove, internal resizes etc...
+      - While multiple threads accessing NonBlocking dictionary will help each other in operations such as table resizing, there is no dependency on such behavior. If any thread get unscheduled or delayed for whatever reason, other threads will be able to make progress independently.
+      - NonBlocking dictionary scales linearly with the number of active threads if hardware permits.
+
       === Counter32
       === Counter64
       Low-overhead scalable counters.
+
+      === Disclaimer
+      I, Azure Gem, do not intend to maintain this fork.
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>
-        Minor bug fixes.
+        Fork
     </PackageReleaseNotes>
     <Summary>Implementation of a lock-free dictionary on .Net</Summary>
     <Copyright>Copyright 2022 (c) Vladimir Sadov. All rights reserved.</Copyright>
     <PackageTags>lock-free wait-free dictionary high-performance</PackageTags>
-    <PackageProjectUrl>https://github.com/VSadov/NonBlocking</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/rreminy/NonBlocking</PackageProjectUrl>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -61,7 +84,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

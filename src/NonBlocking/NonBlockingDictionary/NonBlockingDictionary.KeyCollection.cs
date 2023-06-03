@@ -6,12 +6,12 @@ using System.Text;
 
 namespace NonBlocking
 {
-    public partial class ConcurrentDictionary<TKey, TValue>
+    public partial class NonBlockingDictionary<TKey, TValue>
     {
-        public sealed class ValueCollection : ICollection<TValue>, ICollection
+        public sealed class KeyCollection : ICollection<TKey>, ICollection
         {
-            private readonly ConcurrentDictionary<TKey, TValue> _dictionary;
-            public ValueCollection(ConcurrentDictionary<TKey, TValue> dictionary)
+            private readonly NonBlockingDictionary<TKey, TValue> _dictionary;
+            public KeyCollection(NonBlockingDictionary<TKey, TValue> dictionary)
             {
                 _dictionary = dictionary;
             }
@@ -24,13 +24,13 @@ namespace NonBlocking
 
             public object SyncRoot => ((ICollection)this._dictionary).SyncRoot;
 
-            public void Add(TValue item) => throw new NotSupportedException();
+            public void Add(TKey item) => throw new NotSupportedException();
 
             public void Clear() => throw new NotSupportedException();
 
-            public bool Contains(TValue item) => this.Any(i => EqualityComparer<TValue>.Default.Equals(item, i));
+            public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
-            public void CopyTo(TValue[] array, int arrayIndex)
+            public void CopyTo(TKey[] array, int arrayIndex)
             {
                 foreach (var item in this)
                 {
@@ -41,9 +41,9 @@ namespace NonBlocking
 
             public void CopyTo(Array array, int index) => throw new NotSupportedException();
 
-            public IEnumerator<TValue> GetEnumerator() => _dictionary.Select(kvp => kvp.Value).GetEnumerator();
+            public IEnumerator<TKey> GetEnumerator() => _dictionary.Select(kvp => kvp.Key).GetEnumerator();
 
-            public bool Remove(TValue item) => throw new NotSupportedException();
+            public bool Remove(TKey item) => throw new NotSupportedException();
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }

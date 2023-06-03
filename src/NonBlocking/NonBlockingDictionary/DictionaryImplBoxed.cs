@@ -13,7 +13,7 @@ namespace NonBlocking
     internal sealed class DictionaryImplBoxed<TKey, TValue>
             : DictionaryImpl<TKey, Boxed<TKey>, TValue>
     {
-        internal DictionaryImplBoxed(int capacity, ConcurrentDictionary<TKey, TValue> topDict)
+        internal DictionaryImplBoxed(int capacity, NonBlockingDictionary<TKey, TValue> topDict)
             : base(capacity, topDict)
         {
         }

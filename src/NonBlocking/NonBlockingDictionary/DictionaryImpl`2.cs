@@ -20,6 +20,7 @@ namespace NonBlocking
         internal DictionaryImpl() { }
 
         internal abstract void Clear();
+        internal abstract void Clear(int capacity);
         internal abstract int Count { get; }
         internal abstract int EstimatedCount { get; }
         internal abstract int Capacity { get; }

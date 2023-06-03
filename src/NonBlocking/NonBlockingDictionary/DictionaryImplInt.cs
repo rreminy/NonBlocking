@@ -6,30 +6,30 @@ using System.Threading;
 
 namespace NonBlocking
 {
-    internal sealed class DictionaryImplLong<TValue>
-                : DictionaryImpl<long, long, TValue>
+    internal sealed class DictionaryImplInt<TValue>
+                : DictionaryImpl<int, int, TValue>
     {
-        internal DictionaryImplLong(int capacity, ConcurrentDictionary<long, TValue> topDict)
+        internal DictionaryImplInt(int capacity, NonBlockingDictionary<int, TValue> topDict)
             : base(capacity, topDict)
         {
         }
 
-        internal DictionaryImplLong(int capacity, DictionaryImplLong<TValue> other)
+        internal DictionaryImplInt(int capacity, DictionaryImplInt<TValue> other)
             : base(capacity, other)
         {
         }
 
-        protected override bool TryClaimSlotForPut(ref long entryKey, long key)
+        protected override bool TryClaimSlotForPut(ref int entryKey, int key)
         {
             return TryClaimSlot(ref entryKey, key);
         }
 
-        protected override bool TryClaimSlotForCopy(ref long entryKey, long key)
+        protected override bool TryClaimSlotForCopy(ref int entryKey, int key)
         {
             return TryClaimSlot(ref entryKey, key);
         }
 
-        private bool TryClaimSlot(ref long entryKey, long key)
+        private bool TryClaimSlot(ref int entryKey, int key)
         {
             var entryKeyValue = entryKey;
             //zero keys are claimed via hash
@@ -47,7 +47,7 @@ namespace NonBlocking
             return key == entryKeyValue || _keyComparer.Equals(key, entryKey);
         }
 
-        protected override int hash(long key)
+        protected override int hash(int key)
         {
             if (key == 0)
             {
@@ -57,46 +57,46 @@ namespace NonBlocking
             return base.hash(key);
         }
 
-        protected override bool keyEqual(long key, long entryKey)
+        protected override bool keyEqual(int key, int entryKey)
         {
             return key == entryKey || _keyComparer.Equals(key, entryKey);
         }
 
-        protected override DictionaryImpl<long, long, TValue> CreateNew(int capacity)
+        protected override DictionaryImpl<int, int, TValue> CreateNew(int capacity)
         {
-            return new DictionaryImplLong<TValue>(capacity, this);
+            return new DictionaryImplInt<TValue>(capacity, this);
         }
 
-        protected override long keyFromEntry(long entryKey)
+        protected override int keyFromEntry(int entryKey)
         {
             return entryKey;
         }
     }
 
-    internal sealed class DictionaryImplLongNoComparer<TValue>
-            : DictionaryImpl<long, long, TValue>
+    internal sealed class DictionaryImplIntNoComparer<TValue>
+            : DictionaryImpl<int, int, TValue>
     {
-        internal DictionaryImplLongNoComparer(int capacity, ConcurrentDictionary<long, TValue> topDict)
+        internal DictionaryImplIntNoComparer(int capacity, NonBlockingDictionary<int, TValue> topDict)
             : base(capacity, topDict)
         {
         }
 
-        internal DictionaryImplLongNoComparer(int capacity, DictionaryImplLongNoComparer<TValue> other)
+        internal DictionaryImplIntNoComparer(int capacity, DictionaryImplIntNoComparer<TValue> other)
             : base(capacity, other)
         {
         }
 
-        protected override bool TryClaimSlotForPut(ref long entryKey, long key)
+        protected override bool TryClaimSlotForPut(ref int entryKey, int key)
         {
             return TryClaimSlot(ref entryKey, key);
         }
 
-        protected override bool TryClaimSlotForCopy(ref long entryKey, long key)
+        protected override bool TryClaimSlotForCopy(ref int entryKey, int key)
         {
             return TryClaimSlot(ref entryKey, key);
         }
 
-        private bool TryClaimSlot(ref long entryKey, long key)
+        private bool TryClaimSlot(ref int entryKey, int key)
         {
             var entryKeyValue = entryKey;
             //zero keys are claimed via hash
@@ -115,29 +115,29 @@ namespace NonBlocking
         }
 
         // inline the base implementation to devirtualize calls to hash and keyEqual
-        internal override object TryGetValue(long key)
+        internal override object TryGetValue(int key)
         {
             return base.TryGetValue(key);
         }
 
-        protected override int hash(long key)
+        protected override int hash(int key)
         {
             return (key == 0) ?
                 ZEROHASH :
-                key.GetHashCode() | SPECIAL_HASH_BITS;
+                key | SPECIAL_HASH_BITS;
         }
 
-        protected override bool keyEqual(long key, long entryKey)
+        protected override bool keyEqual(int key, int entryKey)
         {
             return key == entryKey;
         }
 
-        protected override DictionaryImpl<long, long, TValue> CreateNew(int capacity)
+        protected override DictionaryImpl<int, int, TValue> CreateNew(int capacity)
         {
-            return new DictionaryImplLongNoComparer<TValue>(capacity, this);
+            return new DictionaryImplIntNoComparer<TValue>(capacity, this);
         }
 
-        protected override long keyFromEntry(long entryKey)
+        protected override int keyFromEntry(int entryKey)
         {
             return entryKey;
         }

@@ -7,44 +7,44 @@ using System.Runtime.CompilerServices;
 namespace NonBlocking
 {
     /// <summary>
-    /// <see cref="ConcurrentHashSet{T}"/> forwarded onto a backing <see cref="ConcurrentDictionary{TKey, TValue}"/>.
+    /// <see cref="NonBlockingHashSet{T}"/> forwarded onto a backing <see cref="NonBlockingDictionary{TKey, TValue}"/>.
     /// </summary>
     /// <typeparam name="T">Item type</typeparam>
-    public class ConcurrentHashSet<T> : ISet<T>, IReadOnlySet<T> where T : notnull
+    public class NonBlockingHashSet<T> : ISet<T>, IReadOnlySet<T> where T : notnull
     {
-        private readonly ConcurrentDictionary<T, object?> _backingDictionary;
+        private readonly NonBlockingDictionary<T, object?> _backingDictionary;
 
-        public ConcurrentHashSet()
+        public NonBlockingHashSet()
         {
             _backingDictionary = new();
         }
 
-        public ConcurrentHashSet(IEnumerable<T> items)
+        public NonBlockingHashSet(IEnumerable<T> items)
         {
             _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, (object?)null)));
         }
 
-        public ConcurrentHashSet(IEqualityComparer<T> comparer)
+        public NonBlockingHashSet(IEqualityComparer<T> comparer)
         {
             _backingDictionary = new(comparer);
         }
 
-        public ConcurrentHashSet(int concurrencyLevel, int capacity)
+        public NonBlockingHashSet(int concurrencyLevel, int capacity)
         {
             _backingDictionary = new(concurrencyLevel, capacity);
         }
 
-        public ConcurrentHashSet(IEnumerable<T> items, IEqualityComparer<T> comparer)
+        public NonBlockingHashSet(IEnumerable<T> items, IEqualityComparer<T> comparer)
         {
             _backingDictionary = new(items.Select(item => KeyValuePair.Create(item, (object?)null)), comparer);
         }
 
-        public ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T> comparer)
+        public NonBlockingHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T> comparer)
         {
             _backingDictionary = new(concurrencyLevel, capacity, comparer);
         }
 
-        public ConcurrentHashSet(int concurrencyLevel, IEnumerable<T> items, IEqualityComparer<T> comparer)
+        public NonBlockingHashSet(int concurrencyLevel, IEnumerable<T> items, IEqualityComparer<T> comparer)
         {
             _backingDictionary = new(concurrencyLevel, items.Select(item => KeyValuePair.Create(item, (object?)null)), comparer);
         }

@@ -136,7 +136,7 @@ namespace NonBlockingTests
 
         private static void GetBenchNBObj()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<object, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<object, string>();
 
             var keys = new object[200000];
             for (int i = 0; i < keys.Length; i++) keys[i] = new object();
@@ -170,7 +170,7 @@ namespace NonBlockingTests
 
         private static void TryGetBenchNBObjStr()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<object, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<object, string>();
 
             var keys = new object[200000];
             for (int i = 0; i < keys.Length; i++) keys[i] = new object();
@@ -204,7 +204,7 @@ namespace NonBlockingTests
 
         private static void TryGetBenchNBIntStr()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
 
             Parallel.For(0, 100000, (i) => dict[i] = i.ToString());
             Parallel.For(0, 100000, (i) => { var dummy = dict[i]; });
@@ -232,7 +232,7 @@ namespace NonBlockingTests
 
         private static void TryGetBenchNB_int()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, int>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, int>();
 
             Parallel.For(0, 100000, (i) => dict[i] = i);
             Parallel.For(0, 100000, (i) => { var dummy = dict[i]; });
@@ -260,7 +260,7 @@ namespace NonBlockingTests
 
         private static void GetBenchRndNB()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
 
             Parallel.For(0, 100000, (i) => dict[i] = "qq");
             Parallel.For(0, 100000, (i) => { var dummy = dict[i]; });
@@ -309,7 +309,7 @@ namespace NonBlockingTests
 
         private static void AddBenchRndNB()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
             var count = new Counter32();
 
             var benchmarkName = "======== Random Add NonBlocking int->string 1M Ops/sec:";
@@ -327,7 +327,7 @@ namespace NonBlockingTests
                 {
                     if (Interlocked.CompareExchange(ref count, new Counter32(), c) == c)
                     {
-                        dict = new NonBlocking.ConcurrentDictionary<int, string>();
+                        dict = new NonBlocking.NonBlockingDictionary<int, string>();
                     }
                 }
             };
@@ -365,7 +365,7 @@ namespace NonBlockingTests
 
         private static void GetOrAddFuncBenchRndNB()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
             var count = new Counter32();
 
             var benchmarkName = "======== Random GetOrAdd Func NonBlocking int->string 1M Ops/sec:";
@@ -383,7 +383,7 @@ namespace NonBlockingTests
                 {
                     if (Interlocked.CompareExchange(ref count, new Counter32(), c) == c)
                     {
-                        dict = new NonBlocking.ConcurrentDictionary<int, string>();
+                        dict = new NonBlocking.NonBlockingDictionary<int, string>();
                     }
                 }
             };
@@ -421,7 +421,7 @@ namespace NonBlockingTests
 
         private static void WriteBenchRndNB()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
 
             var benchmarkName = "======== Random Write NonBlocking 1M int->string Ops/sec:";
 
@@ -455,7 +455,7 @@ namespace NonBlockingTests
 
         private static void WriteBenchRndNBint()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, int>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, int>();
 
             var benchmarkName = "======== Random Write NonBlocking 1M int->int Ops/sec:";
 
@@ -573,7 +573,7 @@ namespace NonBlockingTests
 
         private static void ChurnSequential()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
 
             for (int i = 0; i < 1000000; i++)
             {
@@ -593,7 +593,7 @@ namespace NonBlockingTests
 
         private static void ChurnConcurrent()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, string>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, string>();
             //var dict = new Concurrent.ConcurrentDictionary<int, string>();
 
             var threadCnt = 200;
@@ -631,7 +631,7 @@ namespace NonBlockingTests
 
         private static void SingleThreadedSequentialAddWithGapsNB()
         {
-            var dict = new NonBlocking.ConcurrentDictionary<int, int>();
+            var dict = new NonBlocking.NonBlockingDictionary<int, int>();
 
             for (var i = 0; i < 8; ++i)
             {

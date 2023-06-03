@@ -27,7 +27,7 @@ namespace NonBlocking
         private readonly Entry[] _entries;
         internal DictionaryImpl<TKey, TKeyStore, TValue> _newTable;
 
-        protected readonly ConcurrentDictionary<TKey, TValue> _topDict;
+        protected readonly NonBlockingDictionary<TKey, TValue> _topDict;
         protected readonly Counter32 allocatedSlotCount = new Counter32();
         private Counter32 _size;
 
@@ -89,7 +89,7 @@ namespace NonBlocking
         // or getting existing slot suitable for storing a given key in its store form (could be boxed).
         protected abstract bool TryClaimSlotForCopy(ref TKeyStore entryKey, TKeyStore key);
 
-        internal DictionaryImpl(int capacity, ConcurrentDictionary<TKey, TValue> topDict)
+        internal DictionaryImpl(int capacity, NonBlockingDictionary<TKey, TValue> topDict)
         {
             capacity = Math.Max(capacity, MIN_SIZE);
             capacity = Util.AlignToPowerOfTwo(capacity);
@@ -194,8 +194,13 @@ namespace NonBlocking
 
         internal sealed override void Clear()
         {
+            Clear(MIN_SIZE);
+        }
+
+        internal sealed override void Clear(int capacity)
+        {
             if (this.Size == 0) return;
-            var newTable = CreateNew(MIN_SIZE);
+            var newTable = CreateNew(capacity);
             newTable._size = new Counter32();
             _topDict._table = newTable;
         }
@@ -795,7 +800,7 @@ namespace NonBlocking
         {
             Debug.Assert(key != null);
             Debug.Assert(value != TOMBSTONE);
-            Debug.Assert(value != null);
+            //Debug.Assert(value != null);
             Debug.Assert(!(value is Prime));
 
             var curTable = this;

@@ -13,7 +13,7 @@ namespace NonBlocking
     internal sealed class DictionaryImplRef<TKey, TKeyStore, TValue>
             : DictionaryImpl<TKey, TKey, TValue>
     {
-        internal DictionaryImplRef(int capacity, ConcurrentDictionary<TKey, TValue> topDict)
+        internal DictionaryImplRef(int capacity, NonBlockingDictionary<TKey, TValue> topDict)
             : base(capacity, topDict)
         {
             Debug.Assert(!typeof(TKey).IsValueType);

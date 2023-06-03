@@ -22,12 +22,12 @@ namespace NonBlocking
     /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     /// <remarks>
-    /// All public and protected members of <see cref="ConcurrentDictionary{TKey,TValue}"/> are thread-safe and may be used
+    /// All public and protected members of <see cref="NonBlockingDictionary{TKey,TValue}"/> are thread-safe and may be used
     /// concurrently from multiple threads.
     /// </remarks>
     [DebuggerTypeProxy(typeof(IDictionaryDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
-    public partial class ConcurrentDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
+    public partial class NonBlockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
     {
         internal readonly bool valueIsValueType = typeof(TValue).IsValueType;
         internal DictionaryImpl<TKey, TValue> _table;
@@ -48,52 +48,52 @@ namespace NonBlocking
         private static int DefaultConcurrencyLevel => 1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that is empty, has the default concurrency level, has the default initial capacity, and
         /// uses the default comparer for the key type.
         /// </summary>
-        public ConcurrentDictionary() : this(DefaultConcurrencyLevel, DefaultCapacity, null) { }
+        public NonBlockingDictionary() : this(DefaultConcurrencyLevel, DefaultCapacity, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that is empty, has the specified concurrency level and capacity, and uses the default
         /// comparer for the key type.
         /// </summary>
         /// <param name="concurrencyLevel">The estimated number of threads that will update the
-        /// <see cref="ConcurrentDictionary{TKey,TValue}"/> concurrently.</param>
-        /// <param name="capacity">The initial number of elements that the <see cref="ConcurrentDictionary{TKey,TValue}"/> can contain.</param>
+        /// <see cref="NonBlockingDictionary{TKey,TValue}"/> concurrently.</param>
+        /// <param name="capacity">The initial number of elements that the <see cref="NonBlockingDictionary{TKey,TValue}"/> can contain.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="concurrencyLevel"/> is less than 1.</exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity"/> is less than 0.</exception>
-        public ConcurrentDictionary(int concurrencyLevel, int capacity) : this(concurrencyLevel, capacity, null) { }
+        public NonBlockingDictionary(int concurrencyLevel, int capacity) : this(concurrencyLevel, capacity, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that contains elements copied from the specified <see cref="IEnumerable{T}"/>, has the default concurrency
         /// level, has the default initial capacity, and uses the default comparer for the key type.
         /// </summary>
         /// <param name="collection">The <see
-        /// cref="IEnumerable{T}"/> whose elements are copied to the new <see cref="ConcurrentDictionary{TKey,TValue}"/>.</param>
+        /// cref="IEnumerable{T}"/> whose elements are copied to the new <see cref="NonBlockingDictionary{TKey,TValue}"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is a null reference (Nothing in Visual Basic).</exception>
         /// <exception cref="ArgumentException"><paramref name="collection"/> contains one or more duplicate keys.</exception>
-        public ConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : this(collection, null) { }
+        public NonBlockingDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : this(collection, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that is empty, has the specified concurrency level and capacity, and uses the specified
         /// <see cref="IEqualityComparer{TKey}"/>.
         /// </summary>
         /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
-        public ConcurrentDictionary(IEqualityComparer<TKey>? comparer) : this(DefaultConcurrencyLevel, DefaultCapacity, comparer) { }
+        public NonBlockingDictionary(IEqualityComparer<TKey>? comparer) : this(DefaultConcurrencyLevel, DefaultCapacity, comparer) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that contains elements copied from the specified <see cref="IEnumerable"/>, has the default concurrency
         /// level, has the default initial capacity, and uses the specified <see cref="IEqualityComparer{TKey}"/>.
         /// </summary>
-        /// <param name="collection">The <see cref="IEnumerable{T}"/> whose elements are copied to the new <see cref="ConcurrentDictionary{TKey,TValue}"/>.</param>
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> whose elements are copied to the new <see cref="NonBlockingDictionary{TKey,TValue}"/>.</param>
         /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is a null reference (Nothing in Visual Basic).</exception>
-        public ConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
+        public NonBlockingDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
             : this(comparer)
         {
             if (collection is null)
@@ -105,21 +105,21 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that contains elements copied from the specified <see cref="IEnumerable"/>,
         /// has the specified concurrency level, has the specified initial capacity, and uses the specified
         /// <see cref="IEqualityComparer{TKey}"/>.
         /// </summary>
         /// <param name="concurrencyLevel">
-        /// The estimated number of threads that will update the <see cref="ConcurrentDictionary{TKey,TValue}"/> concurrently.
+        /// The estimated number of threads that will update the <see cref="NonBlockingDictionary{TKey,TValue}"/> concurrently.
         /// </param>
         /// <param name="collection">The <see cref="IEnumerable{T}"/> whose elements are copied to the new
-        /// <see cref="ConcurrentDictionary{TKey,TValue}"/>.</param>
+        /// <see cref="NonBlockingDictionary{TKey,TValue}"/>.</param>
         /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is a null reference (Nothing in Visual Basic).</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="concurrencyLevel"/> is less than 1.</exception>
         /// <exception cref="ArgumentException"><paramref name="collection"/> contains one or more duplicate keys.</exception>
-        public ConcurrentDictionary(int concurrencyLevel, IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
+        public NonBlockingDictionary(int concurrencyLevel, IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
             : this(concurrencyLevel, DefaultCapacity, comparer)
         {
             if (collection is null)
@@ -147,15 +147,15 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Initializes a new instance of the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// class that is empty, has the specified concurrency level, has the specified initial capacity, and
         /// uses the specified <see cref="IEqualityComparer{TKey}"/>.
         /// </summary>
-        /// <param name="concurrencyLevel">The estimated number of threads that will update the <see cref="ConcurrentDictionary{TKey,TValue}"/> concurrently.</param>
-        /// <param name="capacity">The initial number of elements that the <see cref="ConcurrentDictionary{TKey,TValue}"/> can contain.</param>
+        /// <param name="concurrencyLevel">The estimated number of threads that will update the <see cref="NonBlockingDictionary{TKey,TValue}"/> concurrently.</param>
+        /// <param name="capacity">The initial number of elements that the <see cref="NonBlockingDictionary{TKey,TValue}"/> can contain.</param>
         /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="concurrencyLevel"/> is less than 1. -or- <paramref name="capacity"/> is less than 0.</exception>
-        public ConcurrentDictionary(int concurrencyLevel, int capacity, IEqualityComparer<TKey>? comparer)
+        public NonBlockingDictionary(int concurrencyLevel, int capacity, IEqualityComparer<TKey>? comparer)
         {
             if (concurrencyLevel < 1)
             {
@@ -170,7 +170,7 @@ namespace NonBlocking
             _values = new(this);
 
             // add some extra so that filled to capacity would be at 50% density
-            capacity = Math.Max(capacity, capacity * 2);
+            //capacity = Math.Max(capacity, capacity * 2); //commented for .Capacity consistency
 
             if (!typeof(TKey).IsValueType)
             {
@@ -184,11 +184,11 @@ namespace NonBlocking
                 {
                     if (comparer == null)
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplIntNoComparer<TValue>(capacity, Unsafe.As<ConcurrentDictionary<int, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplIntNoComparer<TValue>(capacity, Unsafe.As<NonBlockingDictionary<int, TValue>>(this)));
                     }
                     else
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplInt<TValue>(capacity, Unsafe.As<ConcurrentDictionary<int, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplInt<TValue>(capacity, Unsafe.As<NonBlockingDictionary<int, TValue>>(this)));
                         _table._keyComparer = comparer;
                     }
                     return;
@@ -198,11 +198,11 @@ namespace NonBlocking
                 {
                     if (comparer == null)
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplLongNoComparer<TValue>(capacity, Unsafe.As<ConcurrentDictionary<long, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplLongNoComparer<TValue>(capacity, Unsafe.As<NonBlockingDictionary<long, TValue>>(this)));
                     }
                     else
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplLong<TValue>(capacity, Unsafe.As<ConcurrentDictionary<long, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplLong<TValue>(capacity, Unsafe.As<NonBlockingDictionary<long, TValue>>(this)));
                         _table._keyComparer = comparer;
                     }
                     return;
@@ -212,11 +212,11 @@ namespace NonBlocking
                 {
                     if (comparer == null)
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplNintNoComparer<TValue>(capacity, Unsafe.As<ConcurrentDictionary<nint, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplNintNoComparer<TValue>(capacity, Unsafe.As<NonBlockingDictionary<nint, TValue>>(this)));
                     }
                     else
                     {
-                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplNint<TValue>(capacity, Unsafe.As<ConcurrentDictionary<nint, TValue>>(this)));
+                        _table = Unsafe.As<DictionaryImpl<TKey, TValue>>(new DictionaryImplNint<TValue>(capacity, Unsafe.As<NonBlockingDictionary<nint, TValue>>(this)));
                         _table._keyComparer = comparer;
                     }
                     return;
@@ -228,16 +228,16 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Attempts to add the specified key and value to the <see cref="ConcurrentDictionary{TKey, TValue}"/>.
+        /// Attempts to add the specified key and value to the <see cref="NonBlockingDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
         /// <param name="value">The value of the element to add. The value can be a null reference (Nothing
         /// in Visual Basic) for reference types.</param>
         /// <returns>
-        /// true if the key/value pair was added to the <see cref="ConcurrentDictionary{TKey, TValue}"/> successfully; otherwise, false.
+        /// true if the key/value pair was added to the <see cref="NonBlockingDictionary{TKey, TValue}"/> successfully; otherwise, false.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null reference (Nothing in Visual Basic).</exception>
-        /// <exception cref="OverflowException">The <see cref="ConcurrentDictionary{TKey, TValue}"/> contains too many elements.</exception>
+        /// <exception cref="OverflowException">The <see cref="NonBlockingDictionary{TKey, TValue}"/> contains too many elements.</exception>
         public bool TryAdd(TKey key, TValue value)
         {
             if (key is null)
@@ -250,10 +250,10 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Determines whether the <see cref="ConcurrentDictionary{TKey, TValue}"/> contains the specified key.
+        /// Determines whether the <see cref="NonBlockingDictionary{TKey, TValue}"/> contains the specified key.
         /// </summary>
-        /// <param name="key">The key to locate in the <see cref="ConcurrentDictionary{TKey, TValue}"/>.</param>
-        /// <returns>true if the <see cref="ConcurrentDictionary{TKey, TValue}"/> contains an element with the specified key; otherwise, false.</returns>
+        /// <param name="key">The key to locate in the <see cref="NonBlockingDictionary{TKey, TValue}"/>.</param>
+        /// <returns>true if the <see cref="NonBlockingDictionary{TKey, TValue}"/> contains an element with the specified key; otherwise, false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is a null reference (Nothing in Visual Basic).</exception>
         public bool ContainsKey(TKey key)
         {
@@ -269,12 +269,12 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Attempts to remove and return the value with the specified key from the <see cref="ConcurrentDictionary{TKey, TValue}"/>.
+        /// Attempts to remove and return the value with the specified key from the <see cref="NonBlockingDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="key">The key of the element to remove and return.</param>
         /// <param name="value">
         /// When this method returns, <paramref name="value"/> contains the object removed from the
-        /// <see cref="ConcurrentDictionary{TKey,TValue}"/> or the default value of <typeparamref
+        /// <see cref="NonBlockingDictionary{TKey,TValue}"/> or the default value of <typeparamref
         /// name="TValue"/> if the operation failed.
         /// </param>
         /// <returns>true if an object was removed successfully; otherwise, false.</returns>
@@ -346,15 +346,15 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Attempts to get the value associated with the specified key from the <see cref="ConcurrentDictionary{TKey,TValue}"/>.
+        /// Attempts to get the value associated with the specified key from the <see cref="NonBlockingDictionary{TKey,TValue}"/>.
         /// </summary>
         /// <param name="key">The key of the value to get.</param>
         /// <param name="value">
         /// When this method returns, <paramref name="value"/> contains the object from
-        /// the <see cref="ConcurrentDictionary{TKey,TValue}"/> with the specified key or the default value of
+        /// the <see cref="NonBlockingDictionary{TKey,TValue}"/> with the specified key or the default value of
         /// <typeparamref name="TValue"/>, if the operation failed.
         /// </param>
-        /// <returns>true if the key was found in the <see cref="ConcurrentDictionary{TKey,TValue}"/>; otherwise, false.</returns>
+        /// <returns>true if the key was found in the <see cref="NonBlockingDictionary{TKey,TValue}"/>; otherwise, false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is a null reference (Nothing in Visual Basic).</exception>
 #if NETSTANDARD2_1_OR_GREATER
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
@@ -410,9 +410,14 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Removes all keys and values from the <see cref="ConcurrentDictionary{TKey,TValue}"/>.
+        /// Removes all keys and values from the <see cref="NonBlockingDictionary{TKey,TValue}"/>.
         /// </summary>
         public void Clear() => _table.Clear();
+
+        /// <summary>
+        /// Removes all keys and values from the <see cref="NonBlockingDictionary{TKey,TValue}"/>.
+        /// </summary>
+        public void Clear(int capacity) => _table.Clear(capacity);
 
         /// <summary>
         /// Copies the elements of the <see cref="ICollection{T}"/> to an array of type <see cref="KeyValuePair{TKey,TValue}"/>,
@@ -436,10 +441,10 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Copies the key and value pairs stored in the <see cref="ConcurrentDictionary{TKey,TValue}"/> to a
+        /// Copies the key and value pairs stored in the <see cref="NonBlockingDictionary{TKey,TValue}"/> to a
         /// new array.
         /// </summary>
-        /// <returns>A new array containing a snapshot of key and value pairs copied from the <see cref="ConcurrentDictionary{TKey,TValue}"/>.
+        /// <returns>A new array containing a snapshot of key and value pairs copied from the <see cref="NonBlockingDictionary{TKey,TValue}"/>.
         /// </returns>
         public KeyValuePair<TKey, TValue>[] ToArray()
         {
@@ -563,8 +568,8 @@ namespace NonBlocking
         }
 
         /// <summary>Returns an enumerator that iterates through the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</summary>
-        /// <returns>An enumerator for the <see cref="ConcurrentDictionary{TKey,TValue}"/>.</returns>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</summary>
+        /// <returns>An enumerator for the <see cref="NonBlockingDictionary{TKey,TValue}"/>.</returns>
         /// <remarks>
         /// The enumerator returned from the dictionary is safe to use concurrently with
         /// reads and writes to the dictionary, however it does not represent a moment-in-time snapshot
@@ -635,10 +640,10 @@ namespace NonBlocking
         /// <value>
         /// The <see cref="IEqualityComparer{TKey}" /> generic interface implementation
         /// that is used to determine equality of keys for the current
-        /// <see cref="ConcurrentDictionary{TKey, TValue}" /> and to provide hash values for the keys.
+        /// <see cref="NonBlockingDictionary{TKey, TValue}" /> and to provide hash values for the keys.
         /// </value>
         /// <remarks>
-        /// <see cref="ConcurrentDictionary{TKey, TValue}" /> requires an equality implementation to determine
+        /// <see cref="NonBlockingDictionary{TKey, TValue}" /> requires an equality implementation to determine
         /// whether keys are equal. You can specify an implementation of the <see cref="IEqualityComparer{TKey}" />
         /// generic interface by using a constructor that accepts a comparer parameter;
         /// if you do not specify one, the default generic equality comparer <see cref="EqualityComparer{TKey}.Default" /> is used.
@@ -647,36 +652,36 @@ namespace NonBlocking
 
         /// <summary>
         /// Gets the number of key/value pairs contained in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.
         /// </summary>
         /// <exception cref="OverflowException">The dictionary contains too many
         /// elements.</exception>
         /// <value>The number of key/value pairs contained in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</value>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</value>
         /// <remarks>Count has snapshot semantics and represents the number of items in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>
         /// at the moment when Count was accessed.</remarks>
         public int Count => _table.Count;
 
         /// <summary>
         /// Gets the approximate number of key/value pairs contained in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.
         /// </summary>
         /// <exception cref="OverflowException">The dictionary contains too many
         /// elements.</exception>
         /// <value>The number of key/value pairs contained in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</value>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</value>
         /// <remarks>EstimatedCount could be significantly cheaper to obtain, but may be slightly delayed.</remarks>
         public int EstimatedCount => _table.EstimatedCount;
 
         /// <summary>
-        /// Gets the hash table capacity for this <see cref="ConcurrentDictionary{TKey, TValue}"/>
+        /// Gets the hash table capacity for this <see cref="NonBlockingDictionary{TKey, TValue}"/>
         /// </summary>
         /// <value>Hash table size</value>
         public int Capacity => _table.Capacity;
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// if the key does not already exist.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
@@ -706,7 +711,7 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// if the key does not already exist.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
@@ -756,7 +761,7 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/>
         /// if the key does not already exist.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
@@ -785,8 +790,8 @@ namespace NonBlocking
 
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key does not already
-        /// exist, or updates a key/value pair in the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key does not already
+        /// exist, or updates a key/value pair in the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key
         /// already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -846,8 +851,8 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key does not already
-        /// exist, or updates a key/value pair in the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key does not already
+        /// exist, or updates a key/value pair in the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key
         /// already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -906,8 +911,8 @@ namespace NonBlocking
         }
 
         /// <summary>
-        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key does not already
-        /// exist, or updates a key/value pair in the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key
+        /// Adds a key/value pair to the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key does not already
+        /// exist, or updates a key/value pair in the <see cref="NonBlockingDictionary{TKey,TValue}"/> if the key
         /// already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -954,9 +959,9 @@ namespace NonBlocking
         }
 
          /// <summary>
-        /// Gets a value that indicates whether the <see cref="ConcurrentDictionary{TKey,TValue}"/> is empty.
+        /// Gets a value that indicates whether the <see cref="NonBlockingDictionary{TKey,TValue}"/> is empty.
         /// </summary>
-        /// <value>true if the <see cref="ConcurrentDictionary{TKey,TValue}"/> is empty; otherwise,
+        /// <value>true if the <see cref="NonBlockingDictionary{TKey,TValue}"/> is empty; otherwise,
         /// false.</value>
         public bool IsEmpty => _table.Count == 0;
         #region IDictionary<TKey,TValue> members
@@ -973,7 +978,7 @@ namespace NonBlocking
         /// elements.</exception>
         /// <exception cref="ArgumentException">
         /// An element with the same key already exists in the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</exception>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</exception>
         void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
         {
             if (!TryAdd(key, value))
@@ -1092,15 +1097,15 @@ namespace NonBlocking
         #region IEnumerable Members
 
         /// <summary>Returns an enumerator that iterates through the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</summary>
-        /// <returns>An enumerator for the <see cref="ConcurrentDictionary{TKey,TValue}"/>.</returns>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</summary>
+        /// <returns>An enumerator for the <see cref="NonBlockingDictionary{TKey,TValue}"/>.</returns>
         /// <remarks>
         /// The enumerator returned from the dictionary is safe to use concurrently with
         /// reads and writes to the dictionary, however it does not represent a moment-in-time snapshot
         /// of the dictionary.  The contents exposed through the enumerator may contain modifications
         /// made to the dictionary after <see cref="GetEnumerator"/> was called.
         /// </remarks>
-        IEnumerator IEnumerable.GetEnumerator() => ((ConcurrentDictionary<TKey, TValue>)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((NonBlockingDictionary<TKey, TValue>)this).GetEnumerator();
 
         #endregion
 
@@ -1172,7 +1177,7 @@ namespace NonBlocking
         /// </summary>
         /// <value>true if the <see cref="IDictionary"/> has a
         /// fixed size; otherwise, false. For <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>, this property always
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>, this property always
         /// returns false.</value>
         bool IDictionary.IsFixedSize => false;
 
@@ -1182,7 +1187,7 @@ namespace NonBlocking
         /// </summary>
         /// <value>true if the <see cref="IDictionary"/> is
         /// read-only; otherwise, false. For <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>, this property always
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>, this property always
         /// returns false.</value>
         bool IDictionary.IsReadOnly => false;
 
@@ -1229,16 +1234,16 @@ namespace NonBlocking
         /// <value>The value associated with the specified key, or a null reference (Nothing in Visual Basic)
         /// if <paramref name="key"/> is not in the dictionary or <paramref name="key"/> is of a type that is
         /// not assignable to the key type <typeparamref name="TKey"/> of the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</value>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>.</value>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is a null reference
         /// (Nothing in Visual Basic).</exception>
         /// <exception cref="ArgumentException">
         /// A value is being assigned, and <paramref name="key"/> is of a type that is not assignable to the
         /// key type <typeparamref name="TKey"/> of the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>. -or- A value is being
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>. -or- A value is being
         /// assigned, and <paramref name="key"/> is of a type that is not assignable to the value type
         /// <typeparamref name="TValue"/> of the <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>
         /// </exception>
         object? IDictionary.this[object key]
         {
@@ -1270,7 +1275,7 @@ namespace NonBlocking
 
                 ThrowIfInvalidObjectValue(value);
 
-                ((ConcurrentDictionary<TKey, TValue>)this)[(TKey)key] = (TValue)value!;
+                ((NonBlockingDictionary<TKey, TValue>)this)[(TKey)key] = (TValue)value!;
             }
         }
 
@@ -1352,7 +1357,7 @@ namespace NonBlocking
         /// </summary>
         /// <value>true if access to the <see cref="ICollection"/> is synchronized
         /// (thread safe); otherwise, false. For <see
-        /// cref="ConcurrentDictionary{TKey,TValue}"/>, this property always
+        /// cref="NonBlockingDictionary{TKey,TValue}"/>, this property always
         /// returns false.</value>
         bool ICollection.IsSynchronized => false;
 
